@@ -9,7 +9,7 @@ description = "Policy-controlled Docker network lifecycle management for Traefik
 
 [dependencies]
 anyhow = "1.0"
-reqwest = { version = "0.12", default-features = false, features = ["json", "stream"] }
+reqwest = { version = "0.13", default-features = false, features = ["json", "stream"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 tokio = { version = "1", features = ["macros", "rt", "signal", "time", "sync", "net", "io-util", "io-std"] }
