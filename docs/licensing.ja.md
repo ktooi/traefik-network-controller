@@ -19,16 +19,18 @@ MIT は単純で、このプロジェクトの再利用を広げる方針に適�
 | 範囲 | 確認結果 |
 | --- | --- |
 | リポジトリのソース・example・プロンプト・運用スキルの配布用コピー | 確認したプロジェクトファイル内に、MIT と矛盾する既存のライセンス指定は見つかりませんでした。運用スキルの配布用コピーは、このプロジェクトの独自作成物に含まれます。 |
-| `Cargo.lock` 全体と Cargo metadata | 外部パッケージは **98 個**。非 Linux 向けとビルド用の依存も含め、lockfile の全パッケージを生成した一覧で扱っています。 |
-| Linux GNU の normal/build 依存グラフ | `x86_64-unknown-linux-gnu` では外部パッケージ **84 個**。ビルド用依存や crate 内の未使用部分がすべて実行ファイルへリンクされるとは限りません。 |
+| `Cargo.lock` 全体と Cargo metadata | 外部パッケージは **97 個**。非 Linux 向けとビルド用の依存も含め、lockfile の全パッケージを生成した一覧で扱っています。 |
+| Linux GNU の normal/build 依存グラフ | `cargo tree --locked --target x86_64-unknown-linux-gnu --edges normal,build` で数えた外部パッケージは **81 個**。ビルド用依存や crate 内の未使用部分がすべて実行ファイルへリンクされるとは限りません。 |
 | crate が宣言するライセンス | MIT、Apache-2.0、Unicode-3.0 と BSL-1.0 等を含む許容的な選択肢。MIT を選べる場合は MIT、`ryu` は BSL-1.0 を選択し、`sync_wrapper` は Apache-2.0 のまま扱います。`unicode-ident` には Unicode-3.0 も必要です。 |
-| 実際のライセンスファイルとソース内の表示 | **278 件の資料**を **83 種類の全文**として保持し、パッケージのバージョンと lockfile の crate checksum から参照できます。 |
+| 実際のライセンスファイルとソース内の表示 | **276 件の資料**を **82 種類の全文**として保持し、パッケージのバージョンと lockfile の crate checksum から参照できます。 |
 | Rust 標準ライブラリ | **Rust 1.99.1** の未改変 `COPYRIGHT-library.html` を [third_party/rust/](../third_party/rust/README.md) に保持しました。`ORIGIN.json` にバージョン、compiler commit、ファイルの hash を記録しています。 |
 | Debian の実行用イメージ | 各パッケージのライセンスとソース提供義務は別に残ります。この環境では最終イメージのビルド・監査は実行していません。[TESTING.md](../TESTING.md) を参照してください。 |
 
 Cargo のライセンス文字列だけでなく、コード中の表示も確認しました。例えば `futures-channel` の `src/mpsc/queue.rs` に BSD の表示、`tracing-core` の `src/spin/` に別の著作者の MIT 表示、`icu_provider` に Rust Project の帰属表示、`tower` のオプションである Peak-EWMA 実装に Apache の帰属表示があります。特定の feature や platform がビルド対象外でも、これらを配布用表示に含めています。[BSD-2-Clause](https://spdx.org/licenses/BSD-2-Clause.html)、[Unicode-3.0](https://www.unicode.org/license.txt)、Apache-2.0 には、それぞれ該当する表示を保持する条件があります。
 
 Rust の文書は、platform 固有のコードやビルド用資料を含む、本実行ファイルより広い上流の一覧です。記載された全構成要素が本実行ファイルへリンクされると解釈しないでください。`COPYRIGHT-library.html` の目的は Rust の [COPYRIGHT 文書](https://github.com/rust-lang/rust/blob/main/COPYRIGHT)に説明されています。このビルドを再配布する際は、同梱したリリース固有のコピーを利用してください。
+
+reqwest 0.13.5 への更新では MIT OR Apache-2.0 の指定が維持され、Sean McArthur の MIT 著作権表示の年が 2026 に更新されています。wasm-streams 0.5.0 のライセンス本文は変更されていません。`query` feature により serde_urlencoded 0.7.1 と ryu 1.0.23 を引き続き使用し、base64 0.22.1 は lockfile から除外されました。更新した一覧は、確認済みのコード内表示と残りの全パッケージの本文を保持しています。
 
 ## 配布物に含めるもの
 
