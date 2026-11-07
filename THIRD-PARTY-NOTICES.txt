@@ -1,10 +1,10 @@
 THIRD-PARTY NOTICES — TRAEFIK NETWORK CONTROLLER
 
 Generated from Cargo.lock and the corresponding downloaded crate sources.
-Cargo.lock SHA-256: 9f22958ad8e18f10f7fcb192fe0dcdecd25567766206dbc894af664e008ee460
-External packages: 98
-Notice files/comment blocks: 278
-Distinct notice texts: 83
+Cargo.lock SHA-256: 6be087c62f0bcd58b73bdad86db4a8c8dfc6a139856fc36d2c73abcc8c3f0c26
+External packages: 97
+Notice files/comment blocks: 276
+Distinct notice texts: 82
 
 This inventory conservatively includes all locked platforms and build/test
 dependencies for the project's configured features. It is not a statement
@@ -46,15 +46,6 @@ atomic-waker 1.1.2
   Notice: LICENSE-APACHE -> SHA-256 a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2
   Notice: LICENSE-MIT -> SHA-256 23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3
   Notice: LICENSE-THIRD-PARTY -> SHA-256 6226d0632e2e1a80c23597e964da9812ae193c535fe058154afb034e94167aa5
-
-base64 0.22.1
-  Crate: https://crates.io/crates/base64/0.22.1
-  Registry package SHA-256: 72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6
-  Declared license: MIT OR Apache-2.0
-  Chosen package license: MIT
-  Authors (package metadata): Marshall Pierce <marshall@mpierce.org>
-  Notice: LICENSE-APACHE -> SHA-256 a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2
-  Notice: LICENSE-MIT -> SHA-256 0dd882e53de11566d50f8e8e2d5a651bcf3fabee4987d70f306233cf39094ba7
 
 base64 0.23.1
   Crate: https://crates.io/crates/base64/0.23.1
@@ -499,14 +490,14 @@ quote 1.0.47
   Notice: LICENSE-APACHE -> SHA-256 62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a
   Notice: LICENSE-MIT -> SHA-256 23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3
 
-reqwest 0.12.28
-  Crate: https://crates.io/crates/reqwest/0.12.28
-  Registry package SHA-256: eddd3ca559203180a307f12d114c268abf583f59b03cb906fd0b3ff8646c1147
+reqwest 0.13.5
+  Crate: https://crates.io/crates/reqwest/0.13.5
+  Registry package SHA-256: 16a1cfa75cc186dd73d5818e510e042e40927bccc9c236b061cea97e1eb08029
   Declared license: MIT OR Apache-2.0
   Chosen package license: MIT
   Authors (package metadata): Sean McArthur <sean@seanmonstar.com>
   Notice: LICENSE-APACHE -> SHA-256 751963a8b88c0e3a9f27e98933079fbcf09b9998b2c13ac49c2e4d58444520d6
-  Notice: LICENSE-MIT -> SHA-256 47d4e1803702728e03d30f8a848ae2249ba274bbd9f8443e803f7924d83cd371
+  Notice: LICENSE-MIT -> SHA-256 dd87e27dfbaa888cb77ea34592648a7743636b8dce07e49543bddda0fcfc73bc
 
 rustversion 1.0.23
   Crate: https://crates.io/crates/rustversion/1.0.23
@@ -877,9 +868,9 @@ wasm-bindgen-shared 0.2.130
   Notice: LICENSE-APACHE -> SHA-256 a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2
   Notice: LICENSE-MIT -> SHA-256 378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397
 
-wasm-streams 0.4.2
-  Crate: https://crates.io/crates/wasm-streams/0.4.2
-  Registry package SHA-256: 15053d8d85c7eccdbefef60f06769760a563c7f0a9d6902a13d35c7800b0ad65
+wasm-streams 0.5.0
+  Crate: https://crates.io/crates/wasm-streams/0.5.0
+  Registry package SHA-256: 9d1ec4f6517c9e11ae630e200b2b65d193279042e28edd4a2cda233e46670bbb
   Declared license: MIT OR Apache-2.0
   Chosen package license: MIT
   Authors (package metadata): Mattias Buelens <mattias@buelens.com>
@@ -1264,30 +1255,6 @@ SOFTWARE.
 // See the Licenses for the specific language governing permissions and
 // limitations under the Licenses.
 --- END SHA-256 0dbdf76a6727dce4c4e4c83ecc4f505126b6377b09d4091e32b4f2594e371c4b ---
-
---- BEGIN SHA-256 0dd882e53de11566d50f8e8e2d5a651bcf3fabee4987d70f306233cf39094ba7 ---
-The MIT License (MIT)
-
-Copyright (c) 2015 Alice Maz
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
---- END SHA-256 0dd882e53de11566d50f8e8e2d5a651bcf3fabee4987d70f306233cf39094ba7 ---
 
 --- BEGIN SHA-256 0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f ---
 The MIT License (MIT)
@@ -2121,29 +2088,6 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 --- END SHA-256 45f522cacecb1023856e46df79ca625dfc550c94910078bd8aec6e02880b3d42 ---
-
---- BEGIN SHA-256 47d4e1803702728e03d30f8a848ae2249ba274bbd9f8443e803f7924d83cd371 ---
-Copyright (c) 2016-2025 Sean McArthur
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
---- END SHA-256 47d4e1803702728e03d30f8a848ae2249ba274bbd9f8443e803f7924d83cd371 ---
 
 --- BEGIN SHA-256 47dc9ff29128ddfb4d6a0435383c9f89120bc374dbcc1dd00b933a0b28aa7865 ---
 Copyright 2017 Juniper Networks, Inc.
@@ -4522,6 +4466,29 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 --- END SHA-256 dc91f8200e4b2a1f9261035d4c18c33c246911a6c0f7b543d75347e61b249cff ---
+
+--- BEGIN SHA-256 dd87e27dfbaa888cb77ea34592648a7743636b8dce07e49543bddda0fcfc73bc ---
+Copyright (c) 2016-2026 Sean McArthur
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+--- END SHA-256 dd87e27dfbaa888cb77ea34592648a7743636b8dce07e49543bddda0fcfc73bc ---
 
 --- BEGIN SHA-256 deeb22ce438380f3379a62e2c8c7387829bfbaa6890b855eec2c0bb554cd7570 ---
 // Copyright 2014-2015 The Rust Project Developers. See the COPYRIGHT

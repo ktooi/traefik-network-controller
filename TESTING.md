@@ -2,7 +2,20 @@
 
 **Source:** 0.2.0. **Date:** 2026-11-08 JST / 2026-11-07 UTC.
 
-This is a **partially validated source release**. No production deployment, Docker image build, real Engine lifecycle test, host reboot test, or traffic-isolation acceptance was performed. [SPEC.md](SPEC.md) defines the requirements; this file records actual evidence.
+The original 0.2.0 source preparation was **partially validated**, without a production deployment, Docker image build, real Engine lifecycle test, host reboot test, or traffic-isolation acceptance. [SPEC.md](SPEC.md) defines the requirements; this file distinguishes that historical baseline from subsequent dependency-update checks.
+
+## Reqwest 0.13.5 dependency update
+
+This is a compatibility fix within LIFE-008 / AC-10 and PUB-001–002 / AC-19–20. Reqwest 0.13 gates `RequestBuilder::query` behind its `query` feature, which the Docker event subscription requires. Default features remain disabled; the runtime/CLI contract is unchanged. The existing `events_survive_request_timeout_coalesce_and_cancel_while_idle` test verifies the decoded event filter and idle-stream behavior, and `reconnect_renegotiates_the_daemon_api_version` covers reconnection.
+
+Local review on Windows used Rust 1.99.1 and Python 3.13.14:
+
+- `cargo fmt --all -- --check` passed.
+- `cargo metadata --locked --offline --format-version 1` resolved the exact `json`, `query`, and `stream` reqwest features.
+- `python scripts/ci/check_licenses.py --offline` rejected the stale inventory before regeneration and passed afterward: 97 external packages, 276 materials and 82 distinct texts, including the pinned Rust notices. Changed upstream license files and nested notices were inspected before regeneration.
+- Linux Rust/CLI/Unix-socket tests and container smoke could not run locally because WSL/Docker access was denied. Their hosted results are tracked by [PR #1's checks](https://github.com/ktooi/traefik-network-controller/pull/1/checks), using the unchanged full `scripts/ci/check.sh` gate and container job. A local notice check is not a runtime-test pass.
+
+The tables below retain the original source-preparation evidence; their dependency counts and blocked tests describe that earlier baseline.
 
 ## Public-distribution preparation checks
 

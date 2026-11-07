@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Upgrade reqwest to 0.13.5 and explicitly enable its `query` feature to preserve Docker event filtering. Keep default features disabled and refresh the reviewed dependency notices.
+
 ## 0.2.0
 
 ### Public distribution preparation
