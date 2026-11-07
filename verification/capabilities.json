@@ -1,0 +1,87 @@
+{
+  "auto_detach_default": false,
+  "automatic_operations": [
+    "connect",
+    "disconnect"
+  ],
+  "commands": [
+    "run",
+    "once",
+    "plan",
+    "status",
+    "doctor",
+    "capabilities",
+    "healthcheck",
+    "prepare",
+    "retire",
+    "apply",
+    "adopt"
+  ],
+  "configuration": {
+    "TNC_AUTO_DETACH": "false",
+    "TNC_DETACH_GRACE_SECS": "300",
+    "TNC_PROTECTED_NETWORKS": "comma-separated exact names; egress always protected",
+    "TNC_STATE_DIR": "/run/tnc; persist this directory for ownership continuity"
+  },
+  "controller_version": "0.2.0",
+  "detach_grace_default_secs": 300,
+  "docker_api": {
+    "maximum": "1.56",
+    "minimum": "1.48",
+    "transport": "unix_socket_only"
+  },
+  "explicit_operations": [
+    "create",
+    "remove",
+    "adopt"
+  ],
+  "journal_file": "attachments.json",
+  "lifecycle_states": [
+    "prepared",
+    "in_use",
+    "unused_pending",
+    "detached"
+  ],
+  "ownership_proof": [
+    "controller_id",
+    "target_id",
+    "network_id",
+    "endpoint_id",
+    "acknowledged_connect_or_explicit_adopt"
+  ],
+  "plan_ttl_secs": 300,
+  "read_only_commands": [
+    "plan",
+    "status",
+    "doctor",
+    "capabilities",
+    "healthcheck"
+  ],
+  "reason_codes": [
+    "PROTECTED_NETWORK",
+    "REFERENCED",
+    "ATTACHMENT_MISSING",
+    "PREPARED_NEVER_USED",
+    "ALREADY_DETACHED",
+    "AUTO_DETACH_DISABLED",
+    "OWNERSHIP_UNKNOWN",
+    "ENDPOINT_ID_UNAVAILABLE",
+    "GRACE_PENDING",
+    "UNUSED_GRACE_ELAPSED",
+    "PREPARE_REQUESTED",
+    "RETIRE_REQUESTED",
+    "ADOPT_REQUESTED"
+  ],
+  "report_schema_version": 1,
+  "safety": {
+    "all_container_references": true,
+    "automatic_network_delete": false,
+    "docker_endpoint_cas_available": false,
+    "doctor_probes_application_http": false,
+    "force_disconnect": false,
+    "plan_is_authority": false,
+    "prepare_scope": "requested_application_only",
+    "stopped_containers_block_detach": true
+  },
+  "schema_version": 1
+}

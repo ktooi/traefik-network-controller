@@ -1,0 +1,13 @@
+# Allow only the files needed to build the binary into the Docker context.
+**
+!Dockerfile
+!Cargo.toml
+!Cargo.lock
+!rust-toolchain.toml
+!LICENSE
+!THIRD-PARTY-NOTICES.txt
+!third_party/
+!third_party/rust/
+!third_party/rust/**
+!src/
+!src/**

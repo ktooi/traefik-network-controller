@@ -1,0 +1,86 @@
+[Public packaging note: ephemeral workspace path normalized to <workspace>; command results are unchanged.]
+Command: cargo test --locked -- --skip docker::tests::unix_transport_uses_fixed_authority_and_preserves_filters_and_bodies --skip docker::tests::server_with_old_api_is_rejected_over_unix_transport --skip docker::tests::optional_get_means_only_http_404_and_errors_do_not_leak_bodies --skip docker::tests::redirects_are_rejected_without_following_location --skip docker::tests::response_cap_checks_declared_and_streamed_lengths --skip docker::tests::normal_request_deadline_includes_response_body_reads --skip docker::tests::events_survive_request_timeout_coalesce_and_cancel_while_idle --skip docker::tests::shutdown_cancels_a_stalled_version_request --skip docker::tests::reconnect_renegotiates_the_daemon_api_version
+Nine AF_UNIX transport tests explicitly filtered because socket bind is known blocked in this environment. Filtered cases are not passed.
+   Compiling traefik-network-controller v0.2.0 (<workspace>/traefik-network-controller)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.59s
+     Running unittests src/lib.rs (target/debug/deps/traefik_network_controller-8fcfe9fd25642551)
+
+running 59 tests
+test controller::tests::attachment_identity_requires_agreement_of_both_inspection_sources ... ok
+test controller::tests::ambiguous_and_preexisting_connections_do_not_grant_ownership ... ok
+test controller::tests::complete_inventory_counts_stopped_name_only_references ... ok
+test controller::tests::partial_operation_errors_preserve_completed_actions_and_stable_code ... ok
+test controller::tests::retirement_endpoint_inventory_must_be_complete_and_canonical ... ok
+test controller::tests::malformed_or_partial_inventory_is_never_an_empty_reference_set ... ok
+test docker::tests::api_negotiation_checks_both_bounds_and_rejects_malformed_versions ... ok
+test docker::tests::endpoint_and_payload_allowlists_reject_other_docker_mutations ... ok
+test journal::tests::adopting_never_used_edge_does_not_invent_usage_history ... ok
+test journal::tests::adoption_of_manually_reattached_detached_edge_resets_to_pending ... ok
+test controller::tests::malformed_or_symlinked_health_and_state_are_rejected ... ok
+test controller::tests::daemon_lease_is_exclusive_and_separate_from_operation_lock ... ok
+test docker::tests::events_are_bounded_and_bursts_are_coalesced ... ok
+test journal::tests::missing_journal_does_not_recover_an_old_identity ... ok
+test lifecycle::tests::a_replaced_network_full_id_discards_old_name_based_ownership ... ok
+test journal::tests::corrupt_ownership_or_scope_cannot_be_saved_or_loaded ... ok
+test journal::tests::dry_run_and_absent_state_do_not_initialize_or_reset_journal ... ok
+test lifecycle::tests::automatic_detach_requires_grace_and_two_complete_observations ... ok
+test lifecycle::tests::configured_protection_prevents_both_connect_and_disconnect ... ok
+test lifecycle::tests::boot_replacement_resets_one_shot_observation_continuity ... ok
+test lifecycle::tests::endpoint_replacement_never_inherits_ownership_from_network_name ... ok
+test lifecycle::tests::detached_empty_network_stays_detached_and_returning_application_reconnects ... ok
+test lifecycle::tests::connect_only_policy_and_enabling_auto_detach_restart_grace ... ok
+test controller::tests::health_requires_ready_recent_state_and_matching_identity ... ok
+test lifecycle::tests::expired_future_or_forged_saved_plan_never_becomes_authority ... ok
+test lifecycle::tests::event_bursts_in_same_second_do_not_increment_observation_count ... ok
+test lifecycle::tests::manual_reconnection_after_detach_is_preserved_without_ownership ... ok
+test lifecycle::tests::explicit_prepare_reserves_a_detached_or_previously_used_empty_edge ... ok
+test lifecycle::tests::missing_endpoint_identity_revokes_detach_authority ... ok
+test lifecycle::tests::missing_journal_does_not_auto_adopt_current_attachment ... ok
+test controller::tests::mutation_observation_failure_resets_grace_but_stale_proposal_does_not ... ok
+test lifecycle::tests::missing_prepared_edge_connects_without_inventing_ownership ... ok
+test lifecycle::tests::never_used_preparation_is_retained_indefinitely ... ok
+test lifecycle::tests::observation_gaps_and_backward_clock_reset_elapsed_time ... ok
+test lifecycle::tests::preexisting_and_ambiguous_attachments_remain_unowned_after_use ... ok
+test journal::tests::restart_reset_preserves_ownership_but_discards_elapsed_grace ... ok
+test lifecycle::tests::saved_plan_accepts_only_current_exact_policy_and_material_observation ... ok
+test lifecycle::tests::returned_reference_cancels_grace_including_stopped_references ... ok
+test journal::tests::durable_identity_and_revision_survive_round_trip ... ok
+test lifecycle::tests::read_only_evaluation_never_advances_its_input_journal ... ok
+test lifecycle::tests::saved_plan_becomes_stale_when_grace_makes_an_extra_action_eligible ... ok
+test policy::tests::docker_inspect_identity_is_id_not_id_uppercase_or_a_short_prefix ... ok
+test journal::tests::malformed_unsafe_and_symlinked_state_is_not_reset ... ok
+test policy::tests::app_slug_cannot_escape_the_owned_network_namespace ... ok
+test lifecycle::tests::target_replacement_does_not_inherit_old_endpoint_ownership ... ok
+test policy::tests::environment_defaults_and_exact_overrides ... ok
+test policy::tests::duration_limits_are_finite_and_inclusive ... ok
+test policy::tests::default_managed_bridge_and_ipv6_are_accepted ... ok
+test lifecycle::tests::structured_plan_round_trip_preserves_contract_and_unknown_fields_refuse ... ok
+test policy::tests::malformed_reference_inventory_cannot_authorize_retirement ... ok
+test policy::tests::exact_running_target_with_fixed_egress_is_accepted ... ok
+test policy::tests::project_is_required_and_never_inferred_or_trimmed ... ok
+test policy::tests::egress_requires_exact_priority_and_no_tie_or_override ... ok
+test policy::tests::endpoint_identity_and_schema_cannot_be_silently_defaulted ... ok
+test policy::tests::target_name_compose_identity_and_running_state_all_matter ... ok
+test policy::tests::environment_paths_names_numbers_and_booleans_are_strict ... ok
+test policy::tests::network_identity_and_label_contract_are_not_just_a_name_prefix ... ok
+test policy::tests::stopped_container_references_match_by_name_or_id ... ok
+test policy::tests::unsafe_or_ambiguous_network_properties_fail_closed ... ok
+
+test result: ok. 59 passed; 0 failed; 0 ignored; 0 measured; 9 filtered out; finished in 0.01s
+
+     Running unittests src/main.rs (target/debug/deps/traefik_network_controller-897fd6060a574d19)
+
+running 2 tests
+test tests::read_only_commands_reject_mutation_and_unknown_flags ... ok
+test tests::adoption_requires_three_distinct_identity_flags ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests traefik_network_controller
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+Observed exit code: 0

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Traefik Network Controller 0.2.0 command error",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "controller_version",
+    "error"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "controller_version": {
+      "const": "0.2.0"
+    },
+    "command": {
+      "type": "string"
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_]*$"
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "details": {}
+      }
+    }
+  }
+}

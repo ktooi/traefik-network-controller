@@ -1,0 +1,16 @@
+test_apply_accepts_piped_input_and_rejects_malformed_schema (__main__.CliSmokeTests.test_apply_accepts_piped_input_and_rejects_malformed_schema) ... ok
+test_apply_rejects_invalid_and_oversized_input_before_locking (__main__.CliSmokeTests.test_apply_rejects_invalid_and_oversized_input_before_locking) ... ok
+test_apply_rejects_symlinks_and_non_regular_files_without_hanging (__main__.CliSmokeTests.test_apply_rejects_symlinks_and_non_regular_files_without_hanging) ... ok
+test_capabilities_are_available_without_configuration_or_docker (__main__.CliSmokeTests.test_capabilities_are_available_without_configuration_or_docker) ... ok
+test_daemon_is_unhealthy_without_docker_and_stops_on_sigterm (__main__.CliSmokeTests.test_daemon_is_unhealthy_without_docker_and_stops_on_sigterm) ... ok
+test_diagnostics_never_claim_complete_snapshot_without_docker (__main__.CliSmokeTests.test_diagnostics_never_claim_complete_snapshot_without_docker) ... ok
+test_help_and_version_do_not_require_project_configuration (__main__.CliSmokeTests.test_help_and_version_do_not_require_project_configuration) ... ok
+test_invalid_configuration_fails_before_a_docker_request (__main__.CliSmokeTests.test_invalid_configuration_fails_before_a_docker_request) ... ok
+test_invalid_usage_has_exit_code_two (__main__.CliSmokeTests.test_invalid_usage_has_exit_code_two) ... ok
+test_missing_daemon_one_shot_does_not_claim_success_or_health (__main__.CliSmokeTests.test_missing_daemon_one_shot_does_not_claim_success_or_health) ... ok
+test_slow_plan_pipe_times_out_before_taking_operation_lock (__main__.CliSmokeTests.test_slow_plan_pipe_times_out_before_taking_operation_lock) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 10.139s
+
+OK

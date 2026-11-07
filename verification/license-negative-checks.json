@@ -1,0 +1,13 @@
+{
+  "scope": "Manual release-gate probes using temporary files; no runtime controller changes",
+  "results": [
+    {
+      "probe": "stale generated Cargo notices",
+      "result": "rejected"
+    },
+    {
+      "probe": "altered vendored Rust notice",
+      "result": "rejected"
+    }
+  ]
+}

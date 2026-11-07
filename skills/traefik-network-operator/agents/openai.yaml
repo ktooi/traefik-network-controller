@@ -1,0 +1,4 @@
+interface:
+  display_name: "Traefik Network Operator"
+  short_description: "Plan, diagnose, and manage Traefik networks"
+  default_prompt: "Use $traefik-network-operator to plan, safely manage, and verify Traefik application network connections."

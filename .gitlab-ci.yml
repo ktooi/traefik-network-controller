@@ -1,0 +1,145 @@
+# See docs/ci-gitlab.md before enabling publication.
+# Container jobs use a disposable TLS Docker-in-Docker service, never a host socket.
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_TAG'
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH'
+    - when: never
+
+stages:
+  - verify
+  - package
+
+variables:
+  CARGO_TERM_COLOR: always
+  GIT_STRATEGY: clone
+  # Override these non-secret variables for self-managed Docker executor runners.
+  TNC_VERIFY_RUNNER_TAG: saas-linux-small-amd64
+  TNC_CONTAINER_RUNNER_TAG: saas-linux-small-amd64
+
+default:
+  interruptible: true
+
+verify:
+  stage: verify
+  image: rust:1.99.1-bookworm
+  tags:
+    - $TNC_VERIFY_RUNNER_TAG
+  timeout: 45m
+  before_script:
+    - apt-get update
+    - apt-get install --yes --no-install-recommends python3 ca-certificates
+    - rustup component add rustfmt clippy
+  script:
+    - bash scripts/ci/check.sh
+
+.container:
+  stage: package
+  image: docker:29.9.3-cli
+  services:
+    - name: docker:29.9.3-dind
+      alias: docker
+      variables:
+        HEALTHCHECK_TCP_PORT: "2376"
+  tags:
+    - $TNC_CONTAINER_RUNNER_TAG
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: /certs
+    DOCKER_CERT_PATH: /certs/client
+    DOCKER_TLS_VERIFY: "1"
+    DOCKER_CONFIG: "$CI_PROJECT_DIR/.docker-ci"
+    FF_NETWORK_PER_BUILD: "true"
+  needs:
+    - verify
+  timeout: 45m
+  before_script:
+    - apk add --no-cache bash git python3
+    - docker info
+    - mkdir -p "$DOCKER_CONFIG"
+    - chmod 700 "$DOCKER_CONFIG"
+  after_script:
+    - rm -f "$CI_PROJECT_DIR/.docker-ci/config.json"
+
+container_check:
+  extends: .container
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_REF_PROTECTED == "true"'
+    - when: never
+  script:
+    - |
+      set -eu
+      TNC_VERSION="$(python3 -c 'import tomllib; print(tomllib.load(open("Cargo.toml", "rb"))["package"]["version"])')"
+      TNC_LOCAL_IMAGE="tnc-ci:${CI_COMMIT_SHA}"
+      docker build --pull --platform linux/amd64 \
+        --label "org.opencontainers.image.source=${CI_PROJECT_URL}" \
+        --label "org.opencontainers.image.revision=${CI_COMMIT_SHA}" \
+        --label "org.opencontainers.image.version=${TNC_VERSION}" \
+        --tag "$TNC_LOCAL_IMAGE" .
+      bash scripts/ci/test_image.sh "$TNC_LOCAL_IMAGE"
+
+publish_container:
+  extends: .container
+  interruptible: false
+  resource_group: "container-release-${CI_COMMIT_TAG}"
+  variables:
+    GIT_DEPTH: "0"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_PROTECTED == "true" && $CI_COMMIT_TAG =~ /^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$/'
+    - when: never
+  script:
+    - |
+      set -eu
+      python3 scripts/ci/release_metadata.py "$CI_COMMIT_TAG" > release-metadata.json
+      TNC_VERSION="$(python3 -c 'import json; print(json.load(open("release-metadata.json"))["version"])')"
+      TNC_IMAGE_TAG="$(python3 -c 'import json; print(json.load(open("release-metadata.json"))["image_tag"])')"
+
+      # A protected tag must also refer to a commit reviewed into the default branch.
+      git fetch --no-tags origin "+refs/heads/${CI_DEFAULT_BRANCH}:refs/remotes/origin/${CI_DEFAULT_BRANCH}"
+      git merge-base --is-ancestor "$CI_COMMIT_SHA" "refs/remotes/origin/${CI_DEFAULT_BRANCH}"
+
+      test -n "$CI_REGISTRY"
+      test -n "$CI_REGISTRY_IMAGE"
+      TNC_IMAGE_REF="${CI_REGISTRY_IMAGE}:${TNC_IMAGE_TAG}"
+      TNC_REVISION_REF="${CI_REGISTRY_IMAGE}:sha-${CI_COMMIT_SHA}"
+      docker build --pull --platform linux/amd64 \
+        --label "org.opencontainers.image.source=${CI_PROJECT_URL}" \
+        --label "org.opencontainers.image.revision=${CI_COMMIT_SHA}" \
+        --label "org.opencontainers.image.version=${TNC_VERSION}" \
+        --tag "$TNC_IMAGE_REF" .
+      bash scripts/ci/test_image.sh "$TNC_IMAGE_REF"
+
+      # Publish the image that passed the smoke test; do not rebuild after testing.
+      printf '%s' "$CI_REGISTRY_PASSWORD" | \
+        docker login "$CI_REGISTRY" --username "$CI_REGISTRY_USER" --password-stdin
+      docker tag "$TNC_IMAGE_REF" "$TNC_REVISION_REF"
+      docker push "$TNC_IMAGE_REF"
+      docker push "$TNC_REVISION_REF"
+      docker image inspect "$TNC_IMAGE_REF" --format '{{json .RepoDigests}}' > image-digests.json
+      python3 - <<'PY'
+      import json
+      import os
+      from pathlib import Path
+      import re
+
+      digests = json.loads(Path("image-digests.json").read_text())
+      repository = os.environ["CI_REGISTRY_IMAGE"]
+      if not isinstance(digests, list):
+          raise SystemExit("Invalid registry-digest report; inspect the registry before retrying")
+      matches = [item for item in digests if isinstance(item, str)
+                 and item.rpartition("@")[0] == repository
+                 and re.fullmatch(r"sha256:[0-9a-f]{64}", item.rpartition("@")[2])]
+      if not matches:
+          raise SystemExit("A push completed but no registry digest was recorded; inspect the registry before retrying")
+      print("Published image digest: " + matches[0])
+      PY
+  artifacts:
+    when: on_success
+    expire_in: 1 year
+    paths:
+      - release-metadata.json
+      - image-digests.json

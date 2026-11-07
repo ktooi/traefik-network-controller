@@ -1,0 +1,196 @@
+{
+  "checked_at_utc": "2026-11-07T16:38:16.714901+00:00",
+  "scope": "Exact registry-settings Python and push-reference assignment blocks extracted from .github/workflows/ci.yml; local subprocesses with dummy credentials only.",
+  "workflow_sha256": "7540e2db8057477f690cc9d128cf9f4e8f5707f1006dead11ce4d967718e3435",
+  "network_or_registry_access": false,
+  "docker_commands_executed": false,
+  "yaml_parse": "pass",
+  "bash_syntax_checks": 8,
+  "embedded_python_syntax_checks": 2,
+  "registry_setting_cases": [
+    {
+      "case": "hub-disabled",
+      "input": "",
+      "expected": "accept",
+      "result": "pass",
+      "exit_code": 0
+    },
+    {
+      "case": "normal-image",
+      "input": "example/traefik-network-controller",
+      "expected": "accept",
+      "result": "pass",
+      "exit_code": 0
+    },
+    {
+      "case": "repository-dots",
+      "input": "example/traefik.network-controller",
+      "expected": "accept",
+      "result": "pass",
+      "exit_code": 0
+    },
+    {
+      "case": "hyphenated-namespace",
+      "input": "example-org/traefik.network-controller",
+      "expected": "accept",
+      "result": "pass",
+      "exit_code": 0
+    },
+    {
+      "case": "localhost-is-a-hub-namespace",
+      "input": "localhost/repo",
+      "expected": "accept",
+      "result": "pass",
+      "exit_code": 0
+    },
+    {
+      "case": "external-host",
+      "input": "evil.example/repo",
+      "expected": "reject",
+      "result": "pass",
+      "exit_code": 1
+    },
+    {
+      "case": "qualified-hub-path",
+      "input": "docker.io/example/repo",
+      "expected": "reject",
+      "result": "pass",
+      "exit_code": 1
+    },
+    {
+      "case": "qualified-legacy-hub-path",
+      "input": "index.docker.io/example/repo",
+      "expected": "reject",
+      "result": "pass",
+      "exit_code": 1
+    },
+    {
+      "case": "external-host-and-port",
+      "input": "evil.example:5000/repo",
+      "expected": "reject",
+      "result": "pass",
+      "exit_code": 1
+    },
+    {
+      "case": "namespace-port",
+      "input": "example:5000/repo",
+      "expected": "reject",
+      "result": "pass",
+      "exit_code": 1
+    },
+    {
+      "case": "image-tag",
+      "input": "example/repo:latest",
+      "expected": "reject",
+      "result": "pass",
+      "exit_code": 1
+    },
+    {
+      "case": "image-digest",
+      "input": "example/repo@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "expected": "reject",
+      "result": "pass",
+      "exit_code": 1
+    },
+    {
+      "case": "url-scheme",
+      "input": "https://evil.example/repo",
+      "expected": "reject",
+      "result": "pass",
+      "exit_code": 1
+    },
+    {
+      "case": "nested-path",
+      "input": "example/team/repo",
+      "expected": "reject",
+      "result": "pass",
+      "exit_code": 1
+    },
+    {
+      "case": "uppercase-namespace",
+      "input": "Example/repo",
+      "expected": "reject",
+      "result": "pass",
+      "exit_code": 1
+    },
+    {
+      "case": "trailing-newline",
+      "input": "example/repo\n",
+      "expected": "reject",
+      "result": "pass",
+      "exit_code": 1
+    },
+    {
+      "case": "embedded-newline",
+      "input": "example/repo\nextra=value",
+      "expected": "reject",
+      "result": "pass",
+      "exit_code": 1
+    },
+    {
+      "case": "space",
+      "input": "example/repo bad",
+      "expected": "reject",
+      "result": "pass",
+      "exit_code": 1
+    },
+    {
+      "case": "missing-namespace",
+      "input": "/repo",
+      "expected": "reject",
+      "result": "pass",
+      "exit_code": 1
+    },
+    {
+      "case": "missing-repository",
+      "input": "example/",
+      "expected": "reject",
+      "result": "pass",
+      "exit_code": 1
+    },
+    {
+      "case": "trailing-separator",
+      "input": "example/repo-",
+      "expected": "reject",
+      "result": "pass",
+      "exit_code": 1
+    },
+    {
+      "case": "missing-token",
+      "input": "example/repo",
+      "expected": "reject",
+      "result": "pass",
+      "exit_code": 1
+    },
+    {
+      "case": "missing-username",
+      "input": "example/repo",
+      "expected": "reject",
+      "result": "pass",
+      "exit_code": 1
+    }
+  ],
+  "qualified_push_reference_cases": [
+    {
+      "input": "example/traefik.network-controller",
+      "result": "pass",
+      "hub_references": [
+        "docker.io/example/traefik.network-controller:0.2.0",
+        "docker.io/example/traefik.network-controller:sha-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ]
+    },
+    {
+      "input": "localhost/repo",
+      "result": "pass",
+      "hub_references": [
+        "docker.io/localhost/repo:0.2.0",
+        "docker.io/localhost/repo:sha-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ]
+    }
+  ],
+  "limits": [
+    "No GitHub runner execution",
+    "No Docker build, login, or push",
+    "No actionlint execution"
+  ]
+}

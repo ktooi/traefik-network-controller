@@ -1,0 +1,68 @@
+{
+  "checked_at_utc": "2026-11-07T16:39:35.592221+00:00",
+  "source_version": "0.2.0",
+  "requirements": [
+    "PUB-001",
+    "PUB-002",
+    "PUB-003",
+    "PUB-004"
+  ],
+  "acceptance": [
+    "AC-19",
+    "AC-20"
+  ],
+  "yaml": {
+    "files": [
+      ".github/workflows/ci.yml",
+      ".github/dependabot.yml",
+      ".gitlab-ci.yml"
+    ],
+    "parser": "PyYAML BaseLoader with duplicate-key rejection (keeps on literal)",
+    "result": "passed"
+  },
+  "actions_full_commit_refs": 9,
+  "actions_unique_refs": [
+    "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+    "docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc",
+    "docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550",
+    "docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069"
+  ],
+  "embedded_shell_blocks_syntax_checked": 19,
+  "embedded_python_blocks_syntax_checked": 3,
+  "provider_permission_and_rule_static_checks": "passed within inspected configured paths; not provider-side protection verification",
+  "new_paired_executable_document_blocks": 8,
+  "markdown_files_checked": 44,
+  "local_markdown_links_checked": 249,
+  "spec_requirement_ids_en_ja": 40,
+  "spec_acceptance_ids_en_ja": 20,
+  "docker_context_notice_inclusions": "passed static existence/allowlist checks; no Docker build",
+  "not_executed": [
+    "actionlint",
+    "GitLab CI Lint service",
+    "hosted CI pipelines",
+    "Docker build/image smoke",
+    "registry login/push",
+    "live Engine and traffic acceptance"
+  ],
+  "unchanged_from_previous_0_2_source_archive": [
+    "Cargo.lock",
+    "examples/compose.overwrite.yaml",
+    "examples/echo.compose.yaml",
+    "src/controller.rs",
+    "src/docker.rs",
+    "src/journal.rs",
+    "src/lib.rs",
+    "src/lifecycle.rs",
+    "src/main.rs",
+    "src/policy.rs",
+    "src/test_support.rs"
+  ],
+  "rust_toolchain_copied_into_docker_context": true,
+  "release_guard_tests_passed": 8,
+  "github_registry_guard_evidence": "verification/github-registry-guard.json",
+  "final_workflow_sha256": {
+    ".github/workflows/ci.yml": "7540e2db8057477f690cc9d128cf9f4e8f5707f1006dead11ce4d967718e3435",
+    ".gitlab-ci.yml": "b7ddec6de13a42d7a8050b6f5164be8c9ec6c5ab340a259787df6ab3b82a23a6",
+    "Dockerfile": "68f6af3c87da41ba7be6fefa8ec93e3e21351766aca949131bbbf8c55b0e939b"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "scope": "Compose static resolution only; no Docker Engine calls",
+  "results": {
+    "echo": {
+      "exit_code": 0,
+      "image": "traefik/whoami:v1.12.0",
+      "host_ports": [],
+      "edge": "traefik_app_echo",
+      "user": "65532:65532"
+    },
+    "base_plus_override": {
+      "exit_code": 0,
+      "controller_network_mode": "none",
+      "auto_detach": "false",
+      "traefik_networks": [
+        "traefik_control",
+        "traefik_egress",
+        "traefik_network",
+        "traefik_waf_network"
+      ],
+      "egress_priority": 100,
+      "proxy_post": "0",
+      "proxy_networks": "0"
+    }
+  }
+}

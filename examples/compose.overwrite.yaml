@@ -1,0 +1,64 @@
+# Copy this file beside the existing Traefik compose.yaml.
+# Expected source layout: ./traefik-network-controller/Dockerfile
+# Always load both files explicitly; "overwrite" is an intentional filename.
+
+services:
+  traefik:
+    networks:
+      # Keep the existing attachments during the application migration.
+      traefik_control: {}
+      traefik_network: {}
+      traefik_waf_network: {}
+      traefik_egress:
+        gw_priority: 100
+
+  controller:
+    image: local/traefik-network-controller:local
+    build:
+      context: ./traefik-network-controller
+      dockerfile: Dockerfile
+    pull_policy: never
+    restart: unless-stopped
+    depends_on:
+      traefik:
+        condition: service_started
+    command: ["run"]
+    network_mode: none
+    user: "0:0"
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 30s
+    environment:
+      TNC_TARGET_PROJECT: "${TNC_TARGET_PROJECT:?Set TNC_TARGET_PROJECT to the existing Traefik Compose project label}"
+      TNC_TARGET_NAME: "traefik"
+      TNC_TARGET_SERVICE: "traefik"
+      TNC_EGRESS_NETWORK: "${TNC_EGRESS_NETWORK:-traefik_egress}"
+      TNC_SOCKET_PATH: "/var/run/docker.sock"
+      TNC_STATE_DIR: "/run/tnc"
+      TNC_INTERVAL_SECS: "${TNC_INTERVAL_SECS:-30}"
+      TNC_API_TIMEOUT_SECS: "${TNC_API_TIMEOUT_SECS:-10}"
+      TNC_HEALTH_MAX_AGE_SECS: "${TNC_HEALTH_MAX_AGE_SECS:-90}"
+      TNC_AUTO_DETACH: "${TNC_AUTO_DETACH:-false}"
+      TNC_DETACH_GRACE_SECS: "${TNC_DETACH_GRACE_SECS:-300}"
+      # Use physical Docker network names, not only Compose network keys.
+      TNC_PROTECTED_NETWORKS: "${TNC_PROTECTED_NETWORKS:-traefik_control,traefik_waf_network,traefik_network}"
+      TNC_DRY_RUN: "${TNC_DRY_RUN:-false}"
+    volumes:
+      # A read-only socket mount still permits Docker API mutations.
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - controller_state:/run/tnc
+
+volumes:
+  controller_state:
+
+networks:
+  traefik_egress:
+    name: "${TNC_EGRESS_NETWORK:-traefik_egress}"
+    driver: bridge
+    internal: false
+
+# The base file retains docker-socket-proxy with POST="0" and NETWORKS="0".
+# The controller uses its own Unix socket mount; do not widen that proxy.

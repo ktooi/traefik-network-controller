@@ -1,0 +1,8 @@
+/target/
+/.env
+/test-results/
+__pycache__/
+/.docker-ci/
+/release-metadata.json
+/image-digests.json
+

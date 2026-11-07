@@ -1,0 +1,29 @@
+traefik-network-controller
+
+USAGE:
+  traefik-network-controller [run|once|plan|status|doctor|capabilities|healthcheck]
+  traefik-network-controller prepare APP
+  traefik-network-controller retire APP
+  traefik-network-controller apply PLAN_FILE_OR_DASH
+  traefik-network-controller adopt APP --target-id ID --network-id ID --endpoint-id ID
+
+run          Reconcile at startup, on Docker events and periodically.
+once         Reconcile once under the configured attachment/detachment policy.
+plan         Read-only Docker snapshot; print a guarded, expiring JSON plan.
+status       Read-only current attachments, ownership and lifecycle decisions.
+doctor       Read-only policy/snapshot checks and local daemon health; no HTTP probe.
+capabilities Print the versioned machine-readable command contract; no Docker calls.
+prepare APP  Create/validate the managed edge network and attach the target.
+retire APP   Explicitly disconnect/delete an unused managed edge network.
+apply FILE   Revalidate and apply a saved plan; use - for bounded JSON on stdin.
+adopt APP    Explicitly claim an existing attachment with three exact identity pins.
+healthcheck  Check recent daemon reconciliation state; no Docker calls.
+
+JSON is the default output; --json and --force are not supported.
+Required: TNC_TARGET_PROJECT (exact Compose project label).
+Auto-detach: TNC_AUTO_DETACH=false, TNC_DETACH_GRACE_SECS=300.
+Protected network names: TNC_PROTECTED_NETWORKS (comma separated).
+Exit codes: 0=completed, 1=operation failed, 2=invalid command arguments.
+Configuration and limitations: SPEC.md and docs/operations.md.
+
+Version: 0.2.0

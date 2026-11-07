@@ -1,0 +1,8 @@
+{
+  "markdown_files": 33,
+  "normative_requirement_ids": 36,
+  "en_ja_requirement_ids_equal": true,
+  "relative_links_and_fences": "passed",
+  "schema_check": "JSON parse and local reference resolution only; no external JSON Schema validator",
+  "errors": []
+}

@@ -1,0 +1,522 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Traefik Network Controller 0.2.0 report / saved reconciliation plan",
+  "description": "Structural contract. Passing this schema is not authorization or freshness verification. The binary re-observes policy, ownership and resources before applying actions.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "controller_version",
+    "target_id",
+    "dry_run",
+    "managed_networks",
+    "observed_at",
+    "observation_complete",
+    "observation",
+    "plan_expires_at",
+    "policy",
+    "journal",
+    "inputs",
+    "decisions",
+    "applied",
+    "pending",
+    "post_verified"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "controller_version": {
+      "const": "0.2.0"
+    },
+    "target_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "dry_run": {
+      "type": "boolean"
+    },
+    "managed_networks": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "observed_at": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "observation_complete": {
+      "type": "boolean"
+    },
+    "observation": {
+      "$ref": "#/$defs/observation"
+    },
+    "plan_expires_at": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "policy": {
+      "$ref": "#/$defs/policy"
+    },
+    "journal": {
+      "$ref": "#/$defs/journal_guard"
+    },
+    "inputs": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/plan_inputs"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decision"
+      }
+    },
+    "applied": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/action"
+      }
+    },
+    "pending": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/action"
+      }
+    },
+    "post_verified": {
+      "type": "boolean"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "managed_network": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "owner"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "name": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9_-]{0,47}$"
+        }
+      }
+    },
+    "endpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "network_id",
+        "gw_priority",
+        "endpoint_id"
+      ],
+      "properties": {
+        "network_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "gw_priority": {
+          "type": "integer"
+        },
+        "endpoint_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "attached"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "attached": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/endpoint"
+          }
+        }
+      }
+    },
+    "journal_guard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "present",
+        "controller_id",
+        "revision"
+      ],
+      "properties": {
+        "present": {
+          "type": "boolean"
+        },
+        "controller_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "socket_path",
+        "state_dir",
+        "target_name",
+        "target_project",
+        "target_service",
+        "egress_network",
+        "auto_detach",
+        "detach_grace_secs",
+        "interval_secs",
+        "api_timeout_secs",
+        "dry_run",
+        "protected_networks"
+      ],
+      "properties": {
+        "socket_path": {
+          "type": "string"
+        },
+        "state_dir": {
+          "type": "string"
+        },
+        "target_name": {
+          "type": "string"
+        },
+        "target_project": {
+          "type": "string"
+        },
+        "target_service": {
+          "type": "string"
+        },
+        "egress_network": {
+          "type": "string"
+        },
+        "auto_detach": {
+          "type": "boolean"
+        },
+        "detach_grace_secs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 604800
+        },
+        "interval_secs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 86400
+        },
+        "api_timeout_secs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 300
+        },
+        "dry_run": {
+          "type": "boolean"
+        },
+        "protected_networks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "complete",
+        "all_containers",
+        "containers_seen",
+        "managed_networks_seen",
+        "started_at",
+        "finished_at"
+      ],
+      "properties": {
+        "complete": {
+          "type": "boolean"
+        },
+        "all_containers": {
+          "type": "boolean"
+        },
+        "containers_seen": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "managed_networks_seen": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "started_at": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "finished_at": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "network_observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "network",
+        "endpoint_container_ids",
+        "target_endpoint_id",
+        "reference_ids"
+      ],
+      "properties": {
+        "network": {
+          "$ref": "#/$defs/managed_network"
+        },
+        "endpoint_container_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "uniqueItems": true
+        },
+        "target_endpoint_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reference_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operation",
+        "network",
+        "network_id",
+        "endpoint_id",
+        "reason_code"
+      ],
+      "properties": {
+        "operation": {
+          "enum": [
+            "connect",
+            "disconnect",
+            "create",
+            "remove",
+            "adopt"
+          ]
+        },
+        "network": {
+          "type": "string"
+        },
+        "network_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "endpoint_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason_code": {
+          "type": "string"
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "network",
+        "network_id",
+        "phase",
+        "ownership",
+        "observed_attached",
+        "desired_attached",
+        "endpoint_id",
+        "reference_ids",
+        "action",
+        "reason_code",
+        "unused_since",
+        "empty_observations"
+      ],
+      "properties": {
+        "network": {
+          "type": "string"
+        },
+        "network_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "phase": {
+          "enum": [
+            "prepared",
+            "in_use",
+            "unused_pending",
+            "detached"
+          ]
+        },
+        "ownership": {
+          "enum": [
+            "unowned",
+            "connected",
+            "adopted"
+          ]
+        },
+        "observed_attached": {
+          "type": "boolean"
+        },
+        "desired_attached": {
+          "type": "boolean"
+        },
+        "endpoint_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reference_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "uniqueItems": true
+        },
+        "action": {
+          "enum": [
+            "connect",
+            "disconnect",
+            "keep",
+            "blocked"
+          ]
+        },
+        "reason_code": {
+          "type": "string"
+        },
+        "unused_since": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "empty_observations": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "plan_inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "api_version",
+        "target",
+        "networks",
+        "journal"
+      ],
+      "properties": {
+        "api_version": {
+          "type": "string"
+        },
+        "target": {
+          "$ref": "#/$defs/target"
+        },
+        "networks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/network_observation"
+          }
+        },
+        "journal": {
+          "$ref": "#/$defs/journal_guard"
+        }
+      }
+    }
+  }
+}

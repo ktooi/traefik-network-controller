@@ -1,0 +1,88 @@
+[Public packaging note: ephemeral workspace path normalized to <workspace>; command results are unchanged.]
+Command: cargo clippy --offline --locked --all-targets -- -D warnings
+error: this `if` statement can be collapsed
+   --> src/controller.rs:194:5
+    |
+194 | /     if let Some(mut journal) = load_journal(cfg)? {
+195 | |         if journal.reset_grace() {
+196 | |             save_journal(cfg, &mut journal)?;
+197 | |         }
+198 | |     }
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+    = note: `-D clippy::collapsible-if` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::collapsible_if)]`
+help: collapse nested if block
+    |
+194 ~     if let Some(mut journal) = load_journal(cfg)?
+195 ~         && journal.reset_grace() {
+196 |             save_journal(cfg, &mut journal)?;
+197 ~         }
+    |
+
+error: this `if` statement can be collapsed
+   --> src/controller.rs:807:5
+    |
+807 | /     if result.is_err() && !dry_run && !cfg.dry_run {
+808 | |         if let Err(error) = reset_grace(cfg) {
+809 | |             log_event(
+810 | |                 "error",
+...   |
+815 | |     }
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+807 ~     if result.is_err() && !dry_run && !cfg.dry_run
+808 ~         && let Err(error) = reset_grace(cfg) {
+809 |             log_event(
+...
+813 |             );
+814 ~         }
+    |
+
+error: this `if` statement can be collapsed
+    --> src/controller.rs:1232:5
+     |
+1232 | /     if result
+1233 | |         .as_ref()
+1234 | |         .is_err_and(|error| error_code(error) != "STALE_PLAN")
+1235 | |         && !cfg.dry_run
+...    |
+1244 | |     }
+     | |_____^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+     |
+1235 ~         && !cfg.dry_run
+1236 ~         && let Err(error) = reset_grace(cfg) {
+1237 |             log_event(
+ ...
+1241 |             );
+1242 ~         }
+     |
+
+error: unnecessary use of `clone` to create a slice from a reference
+    --> src/controller.rs:1619:17
+     |
+1619 |                 &[valid_target.clone()]
+     |                 ^^^^^^^^^^^^^^^^^^^^^^^ help: try: `std::slice::from_ref(&valid_target)`
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#cloned_ref_to_slice_refs
+     = note: `-D clippy::cloned-ref-to-slice-refs` implied by `-D warnings`
+     = help: to override `-D warnings` add `#[allow(clippy::cloned_ref_to_slice_refs)]`
+
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.08s
+
+Observed exit code: 0
+
+FRESH CHECK after cargo clean -p traefik-network-controller --profile dev
+The preceding incremental invocation replayed obsolete diagnostics despite exit0; its output is retained as observed.
+Command: cargo clippy --locked --all-targets -- -D warnings
+    Checking traefik-network-controller v0.2.0 (<workspace>/traefik-network-controller)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.56s
+
+Fresh observed exit code: 0

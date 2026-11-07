@@ -1,0 +1,213 @@
+name: CI and container release
+
+on:
+  pull_request:
+  push:
+    branches: ["**"]
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  CARGO_TERM_COLOR: always
+  # Keep build records out of unrelated artifact consumers.
+  DOCKER_BUILD_RECORD_UPLOAD: "false"
+
+jobs:
+  checks:
+    name: Lint, build, and tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install the repository-pinned Rust toolchain
+        run: rustup show
+
+      - name: Require release-tag protection
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        env:
+          REF_PROTECTED: ${{ github.ref_protected }}
+        run: |
+          if [[ "$REF_PROTECTED" != "true" ]]; then
+            echo "Release tags must be protected by an active repository ruleset." >&2
+            exit 1
+          fi
+
+      - name: Run all quality gates
+        run: bash scripts/ci/check.sh
+
+  image:
+    name: Container smoke test
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+    needs: checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Build the image without publishing
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          platforms: linux/amd64
+          load: true
+          push: false
+          pull: true
+          provenance: false
+          sbom: false
+          tags: tnc-ci:tested
+
+      - name: Test the built image without a Docker socket
+        run: bash scripts/ci/test_image.sh tnc-ci:tested
+
+  publish:
+    name: Publish release image
+    if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') && github.ref_protected }}
+    needs: checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: release
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Check out the tagged source and branch history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Validate the release tag and source branch
+        id: release
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          python3 scripts/ci/release_metadata.py "$RELEASE_TAG" --format github >> "$GITHUB_OUTPUT"
+          git check-ref-format "refs/heads/$DEFAULT_BRANCH"
+          git merge-base --is-ancestor HEAD "refs/remotes/origin/$DEFAULT_BRANCH"
+
+      - name: Validate registry settings
+        id: registry
+        env:
+          DOCKERHUB_IMAGE: ${{ vars.DOCKERHUB_IMAGE }}
+          DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import re
+          from pathlib import Path
+
+          image = os.environ.get("DOCKERHUB_IMAGE", "")
+          if image:
+              if not re.fullmatch(r"[a-z0-9]+(?:[_-][a-z0-9]+)*/[a-z0-9]+(?:[._-][a-z0-9]+)*", image):
+                  raise SystemExit("DOCKERHUB_IMAGE must be lowercase namespace/repository without a registry or tag; namespace dots are not permitted")
+              if not os.environ.get("DOCKERHUB_USERNAME") or not os.environ.get("DOCKERHUB_TOKEN"):
+                  raise SystemExit("Docker Hub publishing requires DOCKERHUB_USERNAME and DOCKERHUB_TOKEN")
+          repository = os.environ["GITHUB_REPOSITORY"].lower()
+          with Path(os.environ["GITHUB_OUTPUT"]).open("a", encoding="utf-8") as output:
+              output.write(f"ghcr_image=ghcr.io/{repository}\n")
+          PY
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Build the release image locally
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          platforms: linux/amd64
+          load: true
+          push: false
+          pull: true
+          # The tested local image is pushed below without rebuilding it.
+          # This workflow does not claim signed provenance or an attached SBOM.
+          provenance: false
+          sbom: false
+          tags: tnc-release:tested
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.version=${{ steps.release.outputs.version }}
+            org.opencontainers.image.licenses=MIT
+
+      - name: Test the exact image to be published
+        run: bash scripts/ci/test_image.sh tnc-release:tested
+
+      - name: Log in to GHCR
+        uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Log in to Docker Hub when configured
+        if: ${{ vars.DOCKERHUB_IMAGE != '' }}
+        uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Publish the tested image
+        env:
+          GHCR_IMAGE: ${{ steps.registry.outputs.ghcr_image }}
+          DOCKERHUB_IMAGE: ${{ vars.DOCKERHUB_IMAGE }}
+          IMAGE_TAG: ${{ steps.release.outputs.image_tag }}
+        run: |
+          refs=("$GHCR_IMAGE:$IMAGE_TAG" "$GHCR_IMAGE:sha-$GITHUB_SHA")
+          if [[ -n "$DOCKERHUB_IMAGE" ]]; then
+            refs+=("docker.io/$DOCKERHUB_IMAGE:$IMAGE_TAG" "docker.io/$DOCKERHUB_IMAGE:sha-$GITHUB_SHA")
+          fi
+          for ref in "${refs[@]}"; do
+            docker image tag tnc-release:tested "$ref"
+            docker image push "$ref"
+          done
+          docker image inspect tnc-release:tested --format '{{json .RepoDigests}}' > "$RUNNER_TEMP/tnc-repo-digests.json"
+          python3 - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          digests = json.loads((Path(os.environ["RUNNER_TEMP"]) / "tnc-repo-digests.json").read_text())
+          if not isinstance(digests, list) or not all(isinstance(item, str) for item in digests):
+              raise SystemExit("Invalid local registry-digest report; inspect the registry before retrying")
+          def normalize(repository):
+              for prefix in ("docker.io/", "index.docker.io/"):
+                  if repository.startswith(prefix):
+                      return repository[len(prefix):]
+              return repository
+
+          expected = [os.environ["GHCR_IMAGE"]]
+          if os.environ.get("DOCKERHUB_IMAGE"):
+              expected.append(os.environ["DOCKERHUB_IMAGE"])
+          for repository in expected:
+              matches = [item for item in digests if normalize(item.rpartition("@")[0]) == repository
+                         and re.fullmatch(r"sha256:[0-9a-f]{64}", item.rpartition("@")[2])]
+              if not matches:
+                  raise SystemExit(f"A push completed but no local registry digest was recorded for {repository}; inspect the registry before retrying")
+          with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a", encoding="utf-8") as summary:
+              summary.write("### Published image digests\n\n")
+              summary.write("Use the digest belonging to your chosen registry.\n\n")
+              summary.writelines(f"- `{item}`\n" for item in digests)
+          PY

@@ -1,0 +1,6 @@
+[Public packaging note: ephemeral workspace path normalized to <workspace>; command results are unchanged.]
+Command: cargo build --offline --locked --release
+   Compiling traefik-network-controller v0.2.0 (<workspace>/traefik-network-controller)
+    Finished `release` profile [optimized] target(s) in 11.67s
+
+Observed exit code: 0

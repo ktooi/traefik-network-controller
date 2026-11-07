@@ -1,0 +1,31 @@
+# Demo application; run prepare echo before docker compose up.
+# The response includes request headers. Do not inject secrets or keep a public
+# diagnostic endpoint available beyond the test that needs it.
+services:
+  echo:
+    image: traefik/whoami:v1.12.0
+    command: ["--port=8080"]
+    restart: unless-stopped
+    user: "65532:65532"
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: traefik_app_echo
+      traefik.http.routers.echo.rule: "Host(`${ECHO_HOSTNAME:-echo.example.test}`)"
+      traefik.http.routers.echo.entrypoints: websecure
+      traefik.http.routers.echo.tls: "true"
+      traefik.http.services.echo.loadbalancer.server.port: "8080"
+      traefik.http.services.echo.loadbalancer.server.scheme: http
+      # Retain the actual deployment's TLS resolver and WAF middleware if used.
+      # Do not invent names or remove an existing protection to make the demo work.
+    networks:
+      - edge
+
+networks:
+  edge:
+    external: true
+    name: traefik_app_echo

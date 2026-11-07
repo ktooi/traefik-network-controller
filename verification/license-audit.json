@@ -1,0 +1,78 @@
+{
+  "requirement": "PUB-001",
+  "source_version": "0.2.0",
+  "review_date": "2026-11-08 JST / 2026-11-07 UTC",
+  "conclusion": "MIT is suitable for original project material with retained third-party terms and notices; this is not a blanket MIT license for dependencies or the OS image.",
+  "cargo_lock_sha256": "9f22958ad8e18f10f7fcb192fe0dcdecd25567766206dbc894af664e008ee460",
+  "locked_external_packages": 98,
+  "linux_gnu_normal_build_external_packages": 84,
+  "declared_license_expression_counts": {
+    "(MIT OR Apache-2.0) AND Unicode-3.0": 1,
+    "Apache-2.0": 1,
+    "Apache-2.0 OR BSL-1.0": 1,
+    "Apache-2.0 OR MIT": 5,
+    "Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT": 1,
+    "MIT": 20,
+    "MIT OR Apache-2.0": 49,
+    "MIT/Apache-2.0": 1,
+    "Unicode-3.0": 18,
+    "Unlicense OR MIT": 1
+  },
+  "reviewed_license_choices": {
+    "MIT": "MIT",
+    "MIT OR Apache-2.0": "MIT",
+    "Apache-2.0 OR MIT": "MIT",
+    "MIT/Apache-2.0": "MIT (legacy dual-license expression)",
+    "Apache-2.0": "Apache-2.0",
+    "Apache-2.0 OR BSL-1.0": "BSL-1.0",
+    "Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT": "MIT",
+    "(MIT OR Apache-2.0) AND Unicode-3.0": "MIT AND Unicode-3.0",
+    "Unicode-3.0": "Unicode-3.0",
+    "Unlicense OR MIT": "MIT"
+  },
+  "full_notice_materials": 278,
+  "distinct_notice_texts": 83,
+  "additional_materials": [
+    "futures-channel BSD-2-Clause source notice",
+    "atomic-waker LICENSE-THIRD-PARTY",
+    "tracing-core/src/spin/LICENSE",
+    "icu_provider Rust-project source notice",
+    "tower optional Peak-EWMA Apache attribution",
+    "serde_json lexical Alexander Huszagh attribution",
+    "utf8_iter and utf_types COPYRIGHT files"
+  ],
+  "rust_standard_library": {
+    "rust_version": "1.99.1",
+    "rust_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+    "source_artifact": "https://static.rust-lang.org/dist/rustc-1.99.1-x86_64-unknown-linux-gnu.tar.xz",
+    "upstream_path": "rustc/share/doc/rust/COPYRIGHT-library.html",
+    "upstream_reference": "https://github.com/rust-lang/rust/blob/58cf8f9c35b355199727627d07ae34a4e2846d67/COPYRIGHT",
+    "scope": "Unmodified upstream Rust standard-library notices, including platform-specific and build dependencies. This is broader than the exact components linked into a Linux executable.",
+    "files": {
+      "COPYRIGHT-library.html": "5647be074c8edf7339fd863055923a8fc80bc5610a8d4661ec3b767b9d392c27"
+    }
+  },
+  "verification": {
+    "cargo_notice_check": "passed (python3 scripts/ci/check_licenses.py --offline)",
+    "notice_regeneration": "passed (python3 scripts/ci/check_licenses.py --offline --write; subsequent no-write check passed)",
+    "python_syntax": "passed",
+    "negative_probes": "stale Cargo notices and altered vendored Rust notice both rejected",
+    "lock_metadata_coverage": "all 99 packages, including the project, match Cargo.lock exactly"
+  },
+  "limitations": [
+    "Cargo source/comment collection is not a complete license classifier; dependency changes require review.",
+    "Inventory deliberately includes target/build material not necessarily linked into the executable.",
+    "Final Debian image and corresponding-source distribution obligations were not audited here because the image was not built.",
+    "This review does not independently establish every contributor's rights and is not a patent search."
+  ],
+  "primary_sources": [
+    "https://opensource.org/license/mit",
+    "https://doc.rust-lang.org/cargo/reference/manifest.html#the-license-and-license-file-fields",
+    "https://www.apache.org/licenses/LICENSE-2.0",
+    "https://www.unicode.org/license.txt",
+    "https://spdx.org/licenses/BSD-2-Clause.html",
+    "https://github.com/rust-lang/rust/blob/main/COPYRIGHT",
+    "https://www.debian.org/doc/debian-policy/ch-docs.html#copyright-information",
+    "https://hub.docker.com/_/debian"
+  ]
+}
